@@ -1,3 +1,6 @@
 torch
 mlflow
 jupyter
+pysftp
+matplotlib
+black
