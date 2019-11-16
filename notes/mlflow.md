@@ -1,6 +1,28 @@
 # Mlflow
 
-# Logging to a Remote Tracking Server
+## MLflow Tracking
+- runs
+- runs can be grouped in experiments
+
+### record the following types of information information
+- Parameters
+    - key value pair of string
+- Metrics
+    - key value (numeric)
+    - can be updated throughout the run
+    - visualization in mlflow
+- Artifacts
+    - output files in any format
+
+### Where is it saved
+- local files
+- database
+- remote Tracking Server
+
+### Demo Notebook
+`01_mlflow_tryout`
+
+### Logging to a Remote Tracking Server
 To manage results centrally or share them across a team.
 
 Options:
@@ -9,7 +31,7 @@ Options:
     - requires account
     - free service that includes a hosted tracking server
 
-## Server Installation
+#### Server Installation
 follow instructions from https://mc.ai/setup-mlflow-in-production/
 Careful: `mlflow-tracking.service` is messed up
 this is what worked:
@@ -31,3 +53,14 @@ ExecStart=/bin/bash -c 'PATH=/root/miniconda3/envs/mlflow_env/bin/:$PATH exec ml
 [Install]
 WantedBy=multi-user.target
 ```
+
+### Has integrations with popular ml libraries
+e.g. [pytorch](https://mlflow.org/docs/latest/python_api/mlflow.pytorch.html#module-mlflow.pytorch):
+- `mlflow.pytorch.log_model(pytorch_model, artifact_path, conda_env=None, ...)`
+Log a PyTorch model as an MLflow artifact for the current run.
+
+- `mlflow.pytorch.load_model(model_uri)`
+
+### example of a mlflow run using pytorch
+- uses tensorboard as well
+https://github.com/mlflow/mlflow/tree/master/examples/pytorch
