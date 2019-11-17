@@ -4,3 +4,4 @@ jupyter
 pysftp
 matplotlib
 black
+fastai
