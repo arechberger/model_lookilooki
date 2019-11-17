@@ -48,6 +48,7 @@ class AvgStatsMlFlowCallback(AvgStatsCallback):
         self.run_name = run_name
         self.tracking_uri = tracking_uri
         self.step = 0
+        self.params = params
 
     def begin_fit(self):
         if self.tracking_uri:
@@ -55,6 +56,9 @@ class AvgStatsMlFlowCallback(AvgStatsCallback):
         print(f"mlflow tracking uri: {mlflow.get_tracking_uri()}")
         mlflow.set_experiment(self.experiment_name)
         mlflow.start_run(run_name=self.run_name)
+        if isinstance(self.params, dict):
+            for key, val in self.params.items():
+                mlflow.log_param(key, val)
 
     def after_epoch(self):
         super().after_epoch()
