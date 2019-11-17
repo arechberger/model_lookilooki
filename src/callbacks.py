@@ -58,12 +58,13 @@ class AvgStatsMlFlowCallback(AvgStatsCallback):
 
     def after_epoch(self):
         super().after_epoch()
-        for name, val in zip(self.metric_names, self.train_stats.avg_stats):
-            mlflow.log_metric(f"train_{name}", float(val), self.step)
-
-        for name, val in zip(self.metric_names, self.valid_stats.avg_stats):
-            mlflow.log_metric(f"valid_{name}", float(val), self.step)
+        self._log_metrics(self.train_stats.avg_stats, "train")
+        self._log_metrics(self.valid_stats.avg_stats, "valid")
         self.step += 1
+
+    def _log_metrics(self, stats, prefix: str):
+        for name, val in zip(self.metric_names, stats):
+            mlflow.log_metric(f"{prefix}_{name}", float(val), self.step)
 
     def after_fit(self):
         mlflow.end_run()
