@@ -49,13 +49,17 @@ class AvgStatsMlFlowCallback(AvgStatsCallback):
         self.tracking_uri = tracking_uri
         self.step = 0
         self.params = params
+        self.set_up_mlflow()
 
-    def begin_fit(self):
+    def set_up_mlflow(self):
         if self.tracking_uri:
             mlflow.set_tracking_uri(self.tracking_uri)
         print(f"mlflow tracking uri: {mlflow.get_tracking_uri()}")
         mlflow.set_experiment(self.experiment_name)
-        mlflow.start_run(run_name=self.run_name)
+
+    def begin_fit(self):
+        mlflow_runner = mlflow.start_run(run_name=self.run_name)
+        self.run.mlflow_uuid = mlflow_runner.info.run_uuid
         if isinstance(self.params, dict):
             for key, val in self.params.items():
                 mlflow.log_param(key, val)
