@@ -1,5 +1,8 @@
-import mlflow
 from typing import Optional
+
+import mlflow
+from livelossplot import PlotLosses
+
 from exp.nb_05b import Callback, AvgStatsCallback, listify
 
 
@@ -76,3 +79,36 @@ class AvgStatsMlFlowCallback(AvgStatsCallback):
 
     def after_fit(self):
         mlflow.end_run()
+
+
+class LivelossCallback(AvgStatsCallback):
+    def __init__(self, metrics):
+        super().__init__(metrics)
+        self.liveloss = PlotLosses(skip_first=0)
+        self.metricnames = [m.__name__ for m in metrics]
+        self.logs = {}
+
+    def begin_epoch(self):
+        super().begin_epoch()
+        self.logs = {}
+        self.iteration = 0
+
+    def after_loss(self):
+        super().after_loss()
+        if self.in_train:
+            self.iteration += 1
+            print(
+                "\r[%d, %5d] Train_loss: %.3f"
+                % (self.epoch + 1, self.iteration, self.loss),
+                end="",
+            )
+
+    def after_epoch(self):
+        super().after_epoch()
+        self.logs["loss"] = self.train_stats.avg_stats[0]
+        self.logs["val_loss"] = self.valid_stats.avg_stats[0]
+        for i, metric in enumerate(self.metricnames):
+            self.logs[metric] = self.train_stats.avg_stats[i + 1].item()
+            self.logs["val_" + metric] = self.valid_stats.avg_stats[i + 1].item()
+        self.liveloss.update(self.logs)
+        self.liveloss.draw()
