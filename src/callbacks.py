@@ -1,6 +1,6 @@
 import mlflow
 from typing import Optional
-from exp.nb_04 import Callback, AvgStatsCallback, listify
+from exp.nb_05b import Callback, AvgStatsCallback, listify
 
 
 class RecorderMlFlowCallback(Callback):
