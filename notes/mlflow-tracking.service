@@ -1,0 +1,16 @@
+[Unit]
+Description=MLflow Tracking Server
+After=network.target
+
+
+[Service]
+Restart=on-failure
+RestartSec=30
+StandardOutput=file:/mlflow/mllogs/stdout.log
+StandardError=file:/mlflow/mllogs/stderr.log
+User=root
+ExecStart=/bin/bash -c 'PATH=/root/miniconda3/envs/mlflow_env/bin/:$PATH exec mlflow server --backend-store-uri postgresql://mlflow_user:mlflow@localhost/mlflow_db --default-artifact-root sftp://mlflow_user@lookilooki.root.sx:/mlflow/mlruns -h 0.0.0.0 -p 8000'
+
+
+[Install]
+WantedBy=multi-user.target
