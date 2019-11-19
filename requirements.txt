@@ -5,3 +5,4 @@ pysftp
 matplotlib
 black
 fastai
+livelossplot
